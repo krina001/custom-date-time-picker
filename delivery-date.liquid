@@ -1,0 +1,133 @@
+{{ '//code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css' | stylesheet_tag }}
+ <script src="{{ 'jquery-ui.min.js' | asset_url }}" defer="defer"></script>
+
+ <div class="col-md-3">
+<div style="width:300px; clear:both;">
+  <p>
+    <label for="date">Pick a delivery date:</label>
+    <input required id="date" type="text" name="attributes[Date]" value="{{ cart.attributes.date }}"/>
+    <span style="display:block" class="instructions"> Free same day delivery in Dubai for orders over AED 175/-</span>
+  </p>
+</div>
+ </div>
+  <div class="col-md-3">
+  <label id="time_option_label">Delivery Time</label>
+  <div id="time_html">
+  <select required class="required" id="delivery-time" name="attributes[Delivery Time]">
+    <option value="10:00 AM - 04:00 PM"{% if cart.attributes["Delivery Time"] == "10:00 AM - 04:00 PM" %} selected{% endif %}>10:00 AM - 04:00 PM</option>
+    <option value="04:00 PM - 10:00 PM"{% if cart.attributes["Delivery Time"] == "04:00 PM - 10:00 PM" %} selected{% endif %}>04:00 PM - 10:00 PM</option>
+  </select>
+  </div>  
+  </div>
+<script>
+  $(document).ready(function(){
+    $("#emirate").change(function(){
+      var optionSelected = $("option:selected", this);
+      var time = new Date().toLocaleTimeString();
+      var city = this.value ;
+      console.log("city===============>",city)
+      if(city == 'Dubai' && time <= '24:00:00 PM'){  
+       date_picker()
+      } else {
+        regular_date_picker()
+      }
+    });
+   
+});
+  window.onload = function() {
+    let time_json = {1:'10:00 AM - 04:00 PM',2:'04:00 PM - 10:00 PM'}
+      if (window.jQuery) {
+        let $ = window.jQuery;
+        $(function() {
+                       
+          document.querySelector('#checkout').disabled = true;
+          $("#date").datepicker({
+         
+          minDate: 0,
+          maxDate: '+50M',
+          // beforeShowDay: function(date) {
+          //     // var day = date.getDay();
+          //     // return [(day != -1), ''];
+          // },
+
+          onSelect: function(){
+                var time = new Date().toLocaleTimeString();
+
+            var selected = $(this).datepicker("getDate");
+            //alert(selected);
+            console.log("date=================>",selected,isToday(selected)); //  true
+      if(time >= '24:00:00 PM'){ 
+        // alert('hiii');
+       $("#date").datepicker("option", "minDate", +1);
+      }  else {
+         // alert('helloo');
+        $("#date").datepicker("option", "minDate", 0);
+      }
+            if(selected){
+              document.querySelector('#checkout').disabled = false;
+            } else {
+              document.querySelector('#checkout').disabled = true;
+            }
+            if(isToday(selected)){
+               //let select_option=buildSelect(time_json)
+              //  $("#delivery-time").html('')
+              //  $('#delivery-time').html($('<option>', {
+              //     value: '04:00 PM - 10:00 PM',
+              //     text: '04:00 PM - 10:00 PM'
+              // })); 
+              let select_option=buildSelect(time_json)
+               $("#time_html").html(select_option)
+            } else{
+               let select_option=buildSelect(time_json)
+               $("#time_html").html(select_option)
+            }
+          }  
+        });
+      });
+
+        
+    }
+  }
+  function buildSelect(options) {
+    // assume options = { value1 : 'Name 1', value2 : 'Name 2', ... }
+    //        default = 'value1'
+
+    var $select = $('<select required class="required" id="delivery-time" name="attributes[Delivery Time]"></select>');
+    var $option;
+
+    for (var val in options) {
+        $option = $('<option value="' + options[val] + '">' + options[val] + '</option>');
+        // if (val == default) {
+        //     $option.attr('selected', 'selected');
+        // }
+        $select.append($option);
+    }
+
+    return $select;
+}
+  function regular_date_picker(){
+   
+      $("#date").datepicker("option", "minDate", +1);
+  
+      $( "#date" ).datepicker( "refresh" );
+  }
+  function date_picker(){
+ 
+    $("#date").datepicker("option", "minDate", 0);
+   
+    $( "#date" ).datepicker( "refresh" );
+  }
+
+  function isToday(date) {
+    const today = new Date();
+  
+    // Today's date
+    console.log(today);
+  
+    if (today.toDateString() === date.toDateString()) {
+      return true;
+    }
+  
+    return false;
+  }
+</script>
