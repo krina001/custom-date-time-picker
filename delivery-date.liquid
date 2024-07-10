@@ -25,7 +25,6 @@
       var optionSelected = $("option:selected", this);
       var time = new Date().toLocaleTimeString();
       var city = this.value ;
-      console.log("city===============>",city)
       if(city == 'Dubai' && time <= '24:00:00 PM'){  
        date_picker()
       } else {
@@ -34,33 +33,21 @@
     });
    
 });
-  window.onload = function() {
+  $(document).ready(function(){
     let time_json = {1:'10:00 AM - 04:00 PM',2:'04:00 PM - 10:00 PM'}
       if (window.jQuery) {
         let $ = window.jQuery;
         $(function() {
-                       
           document.querySelector('#checkout').disabled = true;
           $("#date").datepicker({
-         
           minDate: 0,
           maxDate: '+50M',
-          // beforeShowDay: function(date) {
-          //     // var day = date.getDay();
-          //     // return [(day != -1), ''];
-          // },
-
           onSelect: function(){
                 var time = new Date().toLocaleTimeString();
-
             var selected = $(this).datepicker("getDate");
-            //alert(selected);
-            console.log("date=================>",selected,isToday(selected)); //  true
       if(time >= '24:00:00 PM'){ 
-        // alert('hiii');
        $("#date").datepicker("option", "minDate", +1);
       }  else {
-         // alert('helloo');
         $("#date").datepicker("option", "minDate", 0);
       }
             if(selected){
@@ -69,12 +56,6 @@
               document.querySelector('#checkout').disabled = true;
             }
             if(isToday(selected)){
-               //let select_option=buildSelect(time_json)
-              //  $("#delivery-time").html('')
-              //  $('#delivery-time').html($('<option>', {
-              //     value: '04:00 PM - 10:00 PM',
-              //     text: '04:00 PM - 10:00 PM'
-              // })); 
               let select_option=buildSelect(time_json)
                $("#time_html").html(select_option)
             } else{
@@ -87,7 +68,7 @@
 
         
     }
-  }
+  });
   function buildSelect(options) {
     // assume options = { value1 : 'Name 1', value2 : 'Name 2', ... }
     //        default = 'value1'
